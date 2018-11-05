@@ -1,2 +1,14 @@
-<h2 class="page-header">Dashboard</h2>
-<p>Welcome to your dashboard</p>  
+<div class="menu">
+    <div class="name" id="name"></div>
+</div>
+    
+<ol class="chat" id="chat"></ol>
+
+<div id="readback" style="margin-left: 30px"></div>
+<div id="feedback" style="margin-left: 30px"></div>
+<div id="reconnect" style="text-align:center"></div>
+    
+<div class="chat-message clearfix">
+    <textarea name="message-to-send" id="text" placeholder ="Type your message" rows="3" onkeyup="myFunction(event)"></textarea>
+    <button id="btnId" onclick="send()">Send</button>
+</div>

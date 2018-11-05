@@ -4,6 +4,7 @@
 	<title>Chat App</title>
 	<link rel="stylesheet" href="/css/bootstrap.css" />
 	<link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
 	<div class="container">
@@ -11,7 +12,6 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             {{#if user}} {{!-- {{if user exist}} --}}
-              <li role="presentation"><a href="/">Dashboard</a></li>
               <li role="presentation"><a href="/users/logout">Logout</a></li>
             {{else}}
               <li role="presentation"><a href="/users/login">Login</a></li>
