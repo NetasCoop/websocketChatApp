@@ -12,3 +12,131 @@
     <textarea name="message-to-send" id="text" placeholder ="Type your message" rows="3" onkeyup="myFunction(event)"></textarea>
     <button id="btnId" onclick="send()">Send</button>
 </div>
+
+<script>
+    var socket = new WebSocket("ws://localhost:3000");
+    var name = prompt('What is your name ?');
+    var other = prompt('What is the name of the person you want to talk to?');
+    var feedback = document.getElementById('feedback');
+    var userName = document.getElementById('name');
+    var chat = document.getElementById('chat');
+    var readback = document.getElementById('readback');
+    var reconnect = document.getElementById('reconnect');
+    var sayac = 0;
+    function connect(){
+        var tabId = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random();
+
+        console.log("tabId: " + tabId);
+        socket = new WebSocket("ws://localhost:3000");
+
+        socket.onopen = function(){
+            socket.send(JSON.stringify({
+                type: "name",
+                data: name,
+                other: other
+            }));
+            userName.innerHTML = "<span>" + other + "</span>";
+            
+        }
+        
+        socket.onmessage = function(event){
+            console.log(event);
+            var json = JSON.parse(event.data);
+            if(name == json.other && other == json.name){
+                chat.innerHTML += "<li class='other'><div class='msg'><p>" + json.data + "</p></div></li>";
+            }
+            if(json.type == "message" && json.other == name ){
+                feedback.innerHTML = "";
+                readbackfunction(json);
+            }
+            if(json.type == "forwarded"  && json.name == name){
+                readback.innerHTML = "<p> Mesajınız iletildi ! </p>";
+                
+            }
+            if(json.type == "typing" && json.other == other) {
+                readback.innerHTML = "";
+                feedback.innerHTML = "<span>"+ json.other + " yazıyor...";
+            }
+            if(json.type == "viewedinfo"){
+                console.log("info");
+            }
+        }
+        socket.onclose = function(event){
+            console.log("Closed: " + event);
+            reconnect.innerHTML = "<span>Bağlantınız koptu. Lütfen internet bağlantınızı kontrol ediniz...</span>"
+            setTimeout(connect(), 5000);
+            userClose();
+        }
+        
+        socket.onerror = function(event){
+            console.error("Error: " + event);
+        }
+        
+        socket.readyState = function(event){
+            console.log("State: " + event);
+        }
+
+    }
+    connect();
+
+    function send(){
+        var text = document.getElementById('text').value;
+        document.getElementById('text').value = ""; 
+        socket.send(JSON.stringify({
+            type: "message",
+            data: text,
+            other: other
+        }));
+        reconnect.innerHTML = "";
+        chat.innerHTML +="<li class='self'><div class='msg'><p>" + text + "</p></div></li>";
+    }
+
+    function myFunction(e) { 
+    if (e.keyCode == 13) { 
+        send();
+        } 
+        
+    }
+
+    function readbackfunction(json){
+        socket.send(JSON.stringify({
+        type: "read",
+        name: json.other,
+        other: json.name
+        })); 
+        if(document.hidden === false){
+            viewedfunction();
+        }
+    } 
+
+    function typing(){
+        socket.send(JSON.stringify({
+            type: "typing",
+            name: name ,
+            other: other
+        }));
+    }
+
+    var message = document.getElementById('text');
+    message.addEventListener('keypress', function() {
+        typing();
+    });
+
+    function viewedfunction(){
+        document.addEventListener('visibilitychange', function(){
+                socket.send(JSON.stringify({
+                    type: "viewed",
+                    name: name,
+                    other: other
+                }));
+        });
+    }
+
+    function userClose(json){
+        socket.send(JSON.stringify({
+        type: "userClose",
+        name: json.other,
+        other: json.name
+        }));
+    }
+</script>

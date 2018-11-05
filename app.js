@@ -81,8 +81,85 @@ app.use('/', routes);
 app.use('/users', users);
 
 // Set Port
-app.set('port', (process.env.PORT || 3000));
+/*app.set('port', (process.env.PORT || 3000));
 
 app.listen(app.get('port'), function(){
 	console.log('Server started on port '+app.get('port'));
+});*/
+
+const WebSocket = require('ws');
+var http = require('http');
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+      message = JSON.parse(message);
+      if(message.type == "name"){
+          ws.personName = message.data;//hande
+          ws.othername = message.other;//enes
+          return;
+      }
+      if(message.type == "read"){ //okundu
+          console.log(ws.othername);
+          console.log(ws.personName);
+          wss.clients.forEach(function e (client){
+              if(client != ws)
+                  client.send(JSON.stringify({
+                      type: "forwarded",
+                      name: ws.othername,
+                      other: ws.personName
+                  }));
+          })
+          return;
+      }
+      if(message.type == "viewed"){
+          console.log("Görüldü");
+          wss.clients.forEach(function e (client){
+              if(client != ws)
+                  client.send(JSON.stringify({
+                      type: "viewedinfo",
+                      name: ws.othername,
+                      other: ws.personName
+                  }));
+          })
+          return;
+      }
+    
+      if(message.type == "typing"){
+          wss.clients.forEach(function e (client){
+              if(client != ws)
+                  client.send(JSON.stringify({
+                      type: "typing",
+                      name: ws.othername,
+                      other: ws.personName
+                  }));
+          })
+          return;
+      }
+    
+      console.log("Received: " + message);
+    
+      wss.clients.forEach(function e(client){
+          if(client != ws && message.type == "message")
+              client.send(JSON.stringify({
+                  name: ws.personName,
+                  data: message.data,
+                  other: message.other,
+                  type: "message"
+              }));
+      });
+    });
+   
+    ws.on('close', function(){
+      console.log("I lost a client");
+    });
+    
+    console.log("one more client connected");
+  });
+
+//start our server
+server.listen(process.env.PORT || 3000, () => {
+    console.log(`Server started on port ${server.address().port} `);
 });
