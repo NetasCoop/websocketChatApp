@@ -59,8 +59,9 @@ passport.use(new LocalStrategy(
 			User.comparePassword(password, user.password, function (err, isMatch) {
 				if (err) throw err;
 				if (isMatch) {
-					return done(null, user);
-				} else {
+					var a = User.getUsersName();
+					return done(null, user, {message: a});
+					} else {
 					return done(null, false, { message: 'Invalid password' });
 				}
 			});
