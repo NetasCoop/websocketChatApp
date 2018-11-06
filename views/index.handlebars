@@ -14,7 +14,7 @@
 </div>
 
 <script>
-    var socket = new WebSocket("ws://10.254.17.91:3000");
+    var socket = new WebSocket("ws://10.254.17.180:3000");
     var name = document.getElementById('sessionUserName').innerText;
     var other = prompt('What is the name of the person you want to talk to?');
     var feedback = document.getElementById('feedback');
@@ -24,7 +24,7 @@
     var reconnect = document.getElementById('reconnect');
     var sayac = 0;
     function connect(){
-        socket = new WebSocket("ws://10.254.17.91:3000");
+        socket = new WebSocket("ws://10.254.17.180:3000");
 
         socket.onopen = function(){
             socket.send(JSON.stringify({

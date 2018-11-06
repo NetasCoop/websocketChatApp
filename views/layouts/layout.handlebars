@@ -12,7 +12,7 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             {{#if user}} {{!-- {{if user exist}} --}}
-              <span id="sessionUserName">{{user.username}}</span>
+              <span id="sessionUserName" style="visibility:hidden">{{user.username}}</span>
               <li role="presentation"><a href="/users/logout">Logout</a></li>
             {{else}}
               <li role="presentation"><a href="/users/login">Login</a></li>
