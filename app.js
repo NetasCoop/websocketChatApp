@@ -23,6 +23,12 @@ var users = require('./routes/users');
 // Init App
 var app = express(); //bu degiskenle express frameworkun sağladığı tum altyapı kullanılabilinir
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // View Engine
 app.set('views', path.join(__dirname, 'views')); //confg ayarları
 app.engine('handlebars', exphbs({defaultLayout:'layout'}));

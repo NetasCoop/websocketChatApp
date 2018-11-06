@@ -38,16 +38,3 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     	callback(null, isMatch);
 	});	
 }
-
-module.exports.getUsersName = function(){
-
-	User.find({}, function(err, users) {
-		var userMap = {};
-		users.forEach(function(user) {
-			userMap[user._id] = user;
-			console.log(userMap[user._id].username);
-		  });
-	
-		console.log('Enes' +userMap);
-	  });
-}

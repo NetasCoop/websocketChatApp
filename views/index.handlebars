@@ -8,14 +8,8 @@
                <div class="input-group col-md-12" style="text-align:center">U S E R S</div>
             </div>
             <div class="member_list">
-               <ul class="list-unstyled">
-                   <li class="left clearfix">
-                     <div class="chat-body clearfix">
-                        <div class="header_sec">
-                           <strong class="primary-font">Jack Sparrow</strong>
-                        </div>
-                     </div>
-                  </li>
+               <ul id="asd" class="list-unstyled">
+                   
                </ul>
             </div></div>
          </div>
@@ -49,6 +43,7 @@
 </div>
 
 <script>
+    listUsers();
     var name = document.getElementById('sessionUserName').innerText;
     var other = prompt('What is the name of the person you want to talk to?');
     var feedback = document.getElementById('feedback');
@@ -57,14 +52,13 @@
     var reconnect = document.getElementById('reconnect');
     var sayac = 0;
     function connect(){
-        socket = new WebSocket("ws://10.254.16.98:3000");
+        socket = new WebSocket("ws://10.254.17.180:3000");
         socket.onopen = function(){
             socket.send(JSON.stringify({
                 type: "name",
                 data: name,
                 other: other
             }));
-            
         }
         
         socket.onmessage = function(event){
@@ -158,5 +152,26 @@
         name: json.other,
         other: json.name
         }));
+    }
+
+    function listUsers() {
+        fetch("http://10.254.17.180:3000/getUsers") 
+            .then(function(res) {
+                if(res.ok){
+                res.json().then(function(data){
+                    var xxx = "";
+                    for(var index in data) {
+                        xxx += '<li class="left clearfix">' +
+                            '<div class="chat-body clearfix">' +
+                                '<div class="header_sec">' +
+                                '<strong class="primary-font">' + data[index].username + '</strong>' +
+                                '</div>' +
+                        '</div>' +
+                        '</li>';
+                    }
+                    document.getElementById("asd").innerHTML = xxx;
+                });
+                }
+            })
     }
 </script>
