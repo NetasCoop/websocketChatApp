@@ -1,38 +1,69 @@
-<div class="menu">
-    <div class="name" id="name"></div>
-</div>
-    
-<ol class="chat" id="chat"></ol>
 
-<div id="readback" style="margin-left: 30px"></div>
-<div id="feedback" style="margin-left: 30px"></div>
-<div id="reconnect" style="text-align:center"></div>
-    
-<div class="chat-message clearfix">
-    <textarea name="message-to-send" id="text" placeholder ="Type your message" rows="3" onkeyup="myFunction(event)"></textarea>
-    <button id="btnId" onclick="send()">Send</button>
+<div class="main_section">
+   <div class="container">
+      <div class="chat_container">
+         <div class="col-sm-3 chat_sidebar">
+    	 <div class="row">
+            <div id="custom-search-input">
+               <div class="input-group col-md-12" style="text-align:center">U S E R S</div>
+            </div>
+            <div class="member_list">
+               <ul class="list-unstyled">
+                   <li class="left clearfix">
+                     <div class="chat-body clearfix">
+                        <div class="header_sec">
+                           <strong class="primary-font">Jack Sparrow</strong>
+                        </div>
+                     </div>
+                  </li>
+               </ul>
+            </div></div>
+         </div>
+         <!--chat_sidebar-->
+		 
+		 
+         <div class="col-sm-9 message_section">
+		 <div class="row">
+		 <div class="new_message_head"><div class="name" id="name"></div>
+		 </div><!--new_message_head-->
+		 
+		 <div class="chat_area">
+            <div class="menu" style="visibility:hidden"><div class="name" id="name"></div></div>
+		 <ul class="list-unstyled" id="chat">
+		 </ul>
+         <div id="readback" style="margin-left: 30px"></div>
+         <div id="feedback" style="margin-left: 30px"></div>
+         <div id="reconnect" style="text-align:center"></div>
+		 </div><!--chat_area-->
+         <div class="message_write">
+    	 <textarea class="form-control" id="text" placeholder="type a message" onkeyup="myFunction(event)"></textarea>
+		 <div class="clearfix"></div>
+		 <div class="chat_bottom">
+            <button  class="pull-right btn btn-success" id="btnId" onclick="send()">Send</button>
+         </div>
+		 </div>
+		 </div>
+         </div> <!--message_section-->
+      </div>
+   </div>
 </div>
 
 <script>
-    var socket = new WebSocket("ws://10.254.17.180:3000");
     var name = document.getElementById('sessionUserName').innerText;
     var other = prompt('What is the name of the person you want to talk to?');
     var feedback = document.getElementById('feedback');
-    var userName = document.getElementById('name');
     var chat = document.getElementById('chat');
     var readback = document.getElementById('readback');
     var reconnect = document.getElementById('reconnect');
     var sayac = 0;
     function connect(){
-        socket = new WebSocket("ws://10.254.17.180:3000");
-
+        socket = new WebSocket("ws://10.254.16.98:3000");
         socket.onopen = function(){
             socket.send(JSON.stringify({
                 type: "name",
                 data: name,
                 other: other
             }));
-            userName.innerHTML = "<span>" + other + "</span>";
             
         }
         
@@ -40,19 +71,19 @@
             console.log(event);
             var json = JSON.parse(event.data);
             if(name == json.other && other == json.name){
-                chat.innerHTML += "<li class='other'><div class='msg'><p>" + json.data + "</p></div></li>";
+                chat.innerHTML += "<li class='left clearfix admin_chat'><div class='chat-body1 clearfix'><p>"+json.data+"</p></div></li>";
             }
             if(json.type == "message" && json.other == name ){
                 feedback.innerHTML = "";
                 readbackfunction(json);
             }
             if(json.type == "forwarded"  && json.name == name){
-                readback.innerHTML = "<p> Mesajınız iletildi ! </p>";
+                readback.innerHTML = "<p> Forwarded ! </p>";
                 
             }
             if(json.type == "typing" && json.other == other) {
                 readback.innerHTML = "";
-                feedback.innerHTML = "<span>"+ json.other + " yazıyor...";
+                feedback.innerHTML = "<span>"+ json.other + " typing...";
             }
             if(json.type == "viewedinfo"){
                 console.log("info");
@@ -60,7 +91,7 @@
         }
         socket.onclose = function(event){
             console.log("Closed: " + event);
-            reconnect.innerHTML = "<span>Bağlantınız koptu. Lütfen internet bağlantınızı kontrol ediniz...</span>"
+            reconnect.innerHTML = "<span>You are disconnected! Please check your internet connection.</span>"
             setTimeout(connect(), 5000);
             userClose();
         }
@@ -72,10 +103,8 @@
         socket.readyState = function(event){
             console.log("State: " + event);
         }
-
     }
     connect();
-
     function send(){
         var text = document.getElementById('text').value;
         document.getElementById('text').value = ""; 
@@ -85,16 +114,14 @@
             other: other
         }));
         reconnect.innerHTML = "";
-        chat.innerHTML +="<li class='self'><div class='msg'><p>" + text + "</p></div></li>";
+        chat.innerHTML +="<li class='left clearfix'><div class='chat-body1 clearfix'><p>"+text+"</p></div></li>";
     }
-
     function myFunction(e) { 
     if (e.keyCode == 13) { 
         send();
         } 
         
     }
-
     function readbackfunction(json){
         socket.send(JSON.stringify({
         type: "read",
@@ -105,7 +132,6 @@
             viewedfunction();
         }
     } 
-
     function typing(){
         socket.send(JSON.stringify({
             type: "typing",
@@ -113,12 +139,10 @@
             other: other
         }));
     }
-
     var message = document.getElementById('text');
     message.addEventListener('keypress', function() {
         typing();
     });
-
     function viewedfunction(){
         document.addEventListener('visibilitychange', function(){
                 socket.send(JSON.stringify({
@@ -128,7 +152,6 @@
                 }));
         });
     }
-
     function userClose(json){
         socket.send(JSON.stringify({
         type: "userClose",
