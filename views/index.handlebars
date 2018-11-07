@@ -48,7 +48,7 @@
     var chat = document.getElementById('chat');
     var sayac = 0;
     var selectedUser = document.getElementById('selectedUser');
-    var socket = new WebSocket("ws://10.254.16.210:3000");
+    var socket = new WebSocket("ws://10.254.16.200:3000");
     listUsers();
     function connect(a){
         socket.onopen = function(){
@@ -155,7 +155,7 @@
 
 
    function listUsers() {
-        fetch("http://10.254.16.210:3000/getUsers") 
+        fetch("http://10.254.16.200:3000/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
@@ -181,10 +181,13 @@
 
     function disconnect(){
         if(!navigator.onLine){
-            console.log("bağlantınız koptu");
+            feedback.innerHTML = "<span>You are disconnected! Please check your internet connection.</span>"
         }
-        connect(other); 
-    }
+        else{
+            connect(other); 
+            feedback.innerHTML = "";
+        }
+}
 
     function getWebsocket2(a){
         chat.innerHTML = "";
