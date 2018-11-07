@@ -24,9 +24,9 @@
             <div class="menu" style="visibility:hidden"><div class="name" id="name"></div></div>
 		 <ul class="list-unstyled" id="chat">
 		 </ul>
-         <div id="readback" style="margin-left: 30px"></div>
+ 
          <div id="feedback" style="margin-left: 30px"></div>
-         <div id="reconnect" style="text-align:center"></div>
+    
 		 </div><!--chat_area-->
          <div class="message_write">
     	 <textarea class="form-control" id="text" placeholder="type a message" onkeyup="myFunction(event)"></textarea>
@@ -46,10 +46,8 @@
     var other = "";
     var feedback = document.getElementById('feedback');
     var chat = document.getElementById('chat');
-    var readback = document.getElementById('readback');
-    var reconnect = document.getElementById('reconnect');
     var sayac = 0;
-    var socket = new WebSocket("ws://10.254.16.200:3000");
+    var socket = new WebSocket("ws://localhost:3000");
     listUsers();
     function connect(a){
         socket.onopen = function(){
@@ -64,7 +62,7 @@
             console.log(event);
             var json = JSON.parse(event.data);
             if(name == json.other && other == json.name){
-                readback.innerHTML = "";
+                feedback.innerHTML = "";
                 chat.innerHTML += "<li class='left clearfix admin_chat'><div class='chat-body1 clearfix'><p>"+json.data+"</p></div></li>";
             }
             if(json.type == "message" && json.other == name ){
@@ -72,11 +70,11 @@
                 readbackfunction(json);
             }
             if(json.type == "forwarded"  && json.name == name){
-                readback.innerHTML = "<p> Forwarded ! </p>";
+                feedback.innerHTML = "<p> Forwarded ! </p>";
                 
             }
             if(json.type == "typing" && json.other == other) {
-                readback.innerHTML = "";
+                feedback.innerHTML = "";
                 feedback.innerHTML = "<span>"+ json.other + " typing...";
             }
             if(json.type == "viewedinfo"){
@@ -85,7 +83,7 @@
         }
         socket.onclose = function(event){
             console.log("Closed: " + event);
-            reconnect.innerHTML = "<span>You are disconnected! Please check your internet connection.</span>"
+            feedback.innerHTML = "<span>You are disconnected! Please check your internet connection.</span>"
             setTimeout(connect(), 5000);
             userClose();
         }
@@ -107,7 +105,7 @@
             other: other,
             name: name
         }));
-        reconnect.innerHTML = "";
+        feedback.innerHTML = "";
         chat.innerHTML +="<li class='left clearfix'><div class='chat-body1 clearfix'><p>"+text+"</p></div></li>";
     }
     function myFunction(e) { 
@@ -156,7 +154,7 @@
 
 
    function listUsers() {
-        fetch("http://10.254.16.200:3000/getUsers") 
+        fetch("http://localhost:3000/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
@@ -179,7 +177,7 @@
     }
     function getWebsocket2(a){
         chat.innerHTML = "";
-        readback.innerHTML = "";
+        feedback.innerHTML = "";
         other = a;
         console.log(other);
         socket.send(JSON.stringify({
