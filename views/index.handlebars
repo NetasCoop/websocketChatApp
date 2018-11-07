@@ -42,7 +42,6 @@
 </div>
 
 <script>
-    listUsers();
     var name = document.getElementById('sessionUserName').innerText;
     var other = "";
     var feedback = document.getElementById('feedback');
@@ -51,12 +50,13 @@
     var reconnect = document.getElementById('reconnect');
     var sayac = 0;
     var socket = new WebSocket("ws://10.254.16.200:3000");
-    function connect(){
+    listUsers();
+    function connect(a){
         socket.onopen = function(){
             socket.send(JSON.stringify({
                 type: "name",
-                data: name,
-                other: other
+                name: name,
+                other: a
             }));
         }
         
@@ -64,6 +64,7 @@
             console.log(event);
             var json = JSON.parse(event.data);
             if(name == json.other && other == json.name){
+                readback.innerHTML = "";
                 chat.innerHTML += "<li class='left clearfix admin_chat'><div class='chat-body1 clearfix'><p>"+json.data+"</p></div></li>";
             }
             if(json.type == "message" && json.other == name ){
@@ -103,7 +104,8 @@
         socket.send(JSON.stringify({
             type: "message",
             data: text,
-            other: other
+            other: other,
+            name: name
         }));
         reconnect.innerHTML = "";
         chat.innerHTML +="<li class='left clearfix'><div class='chat-body1 clearfix'><p>"+text+"</p></div></li>";
@@ -153,33 +155,39 @@
     }
 
 
-    function listUsers() {
+   function listUsers() {
         fetch("http://10.254.16.200:3000/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
                     var xxx = "";
                     for(var index in data) {
-                        xxx += '<li class="left clearfix" onclick="getWebsocket()">' +
+                      if(name != data[index].username){
+                            xxx += '<li class="left clearfix" onclick="getWebsocket2(\''+ data[index].username + '\')" >' +
                             '<div class="chat-body clearfix">' +
                                 '<div class="header_sec">' +
-                                '<strong class="primary-font" name='+ data[index]._id +' id="otherName" >' + data[index].username + '</strong>' +
+                                '<span class="primary-font" >' + data[index].username + '</span>' +
                                 '</div>' +
                         '</div>' +
                         '</li>';
-                        $('#asd').append("<tr><td>" + data[index].username + "</td><td>" + data[index].username + "</td><td>" + '<input type="button" onClick="getWebsocket(\'' +  data[index].username + '\')" />' + "</td></tr>");
+                      }
                     }
-                    //document.getElementById("asd").innerHTML = xxx;
-                    
+                    document.getElementById("asd").innerHTML = xxx;
                 });
                 }
             })
     }
-    function getWebsocket(a){
+    function getWebsocket2(a){
+        chat.innerHTML = "";
+        readback.innerHTML = "";
         other = a;
-        socket.close();
-        connect();
         console.log(other);
-        return other;
+        socket.send(JSON.stringify({
+                type: "name",
+                name: name,
+                other: a
+            }));
+            
+        connect(other);
     }
 </script>

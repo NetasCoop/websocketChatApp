@@ -103,7 +103,7 @@ wss.on('connection', function connection(ws) {
       console.log('received: %s', message);
       message = JSON.parse(message);
       if(message.type == "name"){
-          ws.personName = message.data;//hande
+          ws.personName = message.name;//hande
           ws.othername = message.other;//enes
           return;
       }
