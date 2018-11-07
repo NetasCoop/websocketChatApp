@@ -48,7 +48,7 @@
     var chat = document.getElementById('chat');
     var sayac = 0;
     var selectedUser = document.getElementById('selectedUser');
-    var socket = new WebSocket("ws://localhost:3000");
+    var socket = new WebSocket("ws://10.254.16.210:3000");
     listUsers();
     function connect(a){
         socket.onopen = function(){
@@ -74,10 +74,10 @@
                 feedback.innerHTML = "<p> Forwarded ! </p>";
                 
             }
-            if(json.type == "typing" && json.other == other) {
+            /*if(json.type == "typing" && json.other == other) {
                 feedback.innerHTML = "";
                 feedback.innerHTML = "<span>"+ json.other + " typing...";
-            }
+            }*/
             if(json.type == "viewedinfo"){
                 console.log("info");
             }
@@ -155,7 +155,7 @@
 
 
    function listUsers() {
-        fetch("http://localhost:3000/getUsers") 
+        fetch("http://10.254.16.210:3000/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
