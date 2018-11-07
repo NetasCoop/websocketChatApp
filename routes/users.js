@@ -22,7 +22,6 @@ router.post('/register', function (req, res) {
 	var password2 = req.body.password2;
 
 	// Validation
-
 	req.checkBody('username', 'Username is required').notEmpty();
 	req.checkBody('password', 'Password is required').notEmpty();
 	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
@@ -35,16 +34,28 @@ router.post('/register', function (req, res) {
 		});
 	}
 	else {
-			var newUser = new User({
-				username: username,
-				password: password
+		//checking for email and username are already taken
+			User.findOne({  username: { 
+				"$regex": "^" + username + "\\b", "$options": "i"
+		}}, function (err, user) {
+				if (user) {
+					res.render('register', {
+						user: user
+					});
+				}
+				else {
+					var newUser = new User({
+						username: username,
+						password: password
+					});
+					User.createUser(newUser, function (err, user) {
+						if (err) throw err;
+						console.log(user);
+					});
+         	req.flash('success_msg', 'You are registered and can now login');
+					res.redirect('/users/login');
+				}
 			});
-			User.createUser(newUser, function (err, user) {
-				if (err) throw err;
-				console.log(user);
-			});
-	 req.flash('success_msg', 'You are registered and can now login');
-			res.redirect('/users/login');
 	}
 });
 
@@ -60,7 +71,7 @@ passport.use(new LocalStrategy(
 				if (err) throw err;
 				if (isMatch) {
 					return done(null, user);
-					} else {
+				} else {
 					return done(null, false, { message: 'Invalid password' });
 				}
 			});
