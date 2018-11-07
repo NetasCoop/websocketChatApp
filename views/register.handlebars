@@ -14,11 +14,11 @@
   </div>
   <div class="form-group">
     <label>Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password">
+    <input type="password" class="form-control" placeholder="Password" name="password" pattern=".{5,10}" required title="Password must be between 5-10 characters.">
   </div>
   <div class="form-group">
     <label>Confirm Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password2">
+    <input type="password" class="form-control" placeholder="Password" name="password2" pattern=".{5,10}" required title="Password must be between 5-10 characters.">
   </div>
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
