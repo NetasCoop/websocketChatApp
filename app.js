@@ -133,17 +133,7 @@ wss.on('connection', function connection(ws) {
           return;
       }
     
-      if(message.type == "typing"){
-          wss.clients.forEach(function e (client){
-              if(client != ws)
-                  client.send(JSON.stringify({
-                      type: "typing",
-                      name: ws.othername,
-                      other: ws.personName
-                  }));
-          })
-          return;
-      }
+      
     
       console.log("Received: " + message);
     

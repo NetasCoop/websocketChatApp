@@ -15,7 +15,6 @@
          </div>
          <!--chat_sidebar-->
 		 
-		 
          <div class="col-sm-9 message_section">
 		 <div class="row">
 		 <div class="new_message_head"><div class="name" id="name"></div>
@@ -45,14 +44,14 @@
 <script>
     listUsers();
     var name = document.getElementById('sessionUserName').innerText;
-    var other = prompt('What is the name of the person you want to talk to?');
+    var other = "";
     var feedback = document.getElementById('feedback');
     var chat = document.getElementById('chat');
     var readback = document.getElementById('readback');
     var reconnect = document.getElementById('reconnect');
     var sayac = 0;
+    var socket = new WebSocket("ws://10.254.16.200:3000");
     function connect(){
-        socket = new WebSocket("ws://10.254.17.180:3000");
         socket.onopen = function(){
             socket.send(JSON.stringify({
                 type: "name",
@@ -98,7 +97,6 @@
             console.log("State: " + event);
         }
     }
-    connect();
     function send(){
         var text = document.getElementById('text').value;
         document.getElementById('text').value = ""; 
@@ -154,24 +152,34 @@
         }));
     }
 
+
     function listUsers() {
-        fetch("http://10.254.17.180:3000/getUsers") 
+        fetch("http://10.254.16.200:3000/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
                     var xxx = "";
                     for(var index in data) {
-                        xxx += '<li class="left clearfix">' +
+                        xxx += '<li class="left clearfix" onclick="getWebsocket()">' +
                             '<div class="chat-body clearfix">' +
                                 '<div class="header_sec">' +
-                                '<strong class="primary-font">' + data[index].username + '</strong>' +
+                                '<strong class="primary-font" name='+ data[index]._id +' id="otherName" >' + data[index].username + '</strong>' +
                                 '</div>' +
                         '</div>' +
                         '</li>';
+                        $('#asd').append("<tr><td>" + data[index].username + "</td><td>" + data[index].username + "</td><td>" + '<input type="button" onClick="getWebsocket(\'' +  data[index].username + '\')" />' + "</td></tr>");
                     }
-                    document.getElementById("asd").innerHTML = xxx;
+                    //document.getElementById("asd").innerHTML = xxx;
+                    
                 });
                 }
             })
+    }
+    function getWebsocket(a){
+        other = a;
+        socket.close();
+        connect();
+        console.log(other);
+        return other;
     }
 </script>
