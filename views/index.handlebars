@@ -17,7 +17,7 @@
 		 
          <div class="col-sm-9 message_section">
 		 <div class="row">
-		 <div class="new_message_head"><div class="name" id="name"></div>
+		 <div class="new_message_head"><div class="name" id="name"><p id="selectedUser" style="padding-left: 110px;"></p></div>
 		 </div><!--new_message_head-->
 		 
 		 <div class="chat_area">
@@ -47,6 +47,7 @@
     var feedback = document.getElementById('feedback');
     var chat = document.getElementById('chat');
     var sayac = 0;
+    var selectedUser = document.getElementById('selectedUser');
     var socket = new WebSocket("ws://localhost:3000");
     listUsers();
     function connect(a){
@@ -161,7 +162,7 @@
                     var xxx = "";
                     for(var index in data) {
                       if(name != data[index].username){
-                            xxx += '<li class="left clearfix" onclick="getWebsocket2(\''+ data[index].username + '\')" >' +
+                            xxx += '<li class="left clearfix" id="selectUser" onclick="getWebsocket2(\''+ data[index].username + '\')" >' +
                             '<div class="chat-body clearfix">' +
                                 '<div class="header_sec">' +
                                 '<span class="primary-font" >' + data[index].username + '</span>' +
@@ -189,6 +190,7 @@
         chat.innerHTML = "";
         feedback.innerHTML = "";
         other = a;
+        selectedUser.innerText = other;
         console.log(other);
         socket.send(JSON.stringify({
                 type: "name",
