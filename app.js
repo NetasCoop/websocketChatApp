@@ -98,7 +98,9 @@ var http = require('http');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', function connection(ws, req) {
+    ws.id = req.url.split('=')[1];
+
     ws.on('message', function incoming(message) {
       console.log('received: %s', message);
       message = JSON.parse(message);
@@ -111,7 +113,7 @@ wss.on('connection', function connection(ws) {
           console.log(ws.othername);
           console.log(ws.personName);
           wss.clients.forEach(function e (client){
-              if(client != ws)
+              if(client.id == ws.othername)
                   client.send(JSON.stringify({
                       type: "forwarded",
                       name: ws.othername,
@@ -123,7 +125,7 @@ wss.on('connection', function connection(ws) {
       if(message.type == "viewed"){
           console.log("Görüldü");
           wss.clients.forEach(function e (client){
-              if(client != ws)
+              if(client.id == ws.othername)
                   client.send(JSON.stringify({
                       type: "viewedinfo",
                       name: ws.othername,
@@ -133,9 +135,9 @@ wss.on('connection', function connection(ws) {
           return;
       }
 
-      /*if(message.type == "typing"){
+      if(message.type == "typing"){
         wss.clients.forEach(function e (client){
-            if(client != ws)
+            if(client.id == ws.othername)
                 client.send(JSON.stringify({
                     type: "typing",
                     name: ws.othername,
@@ -143,12 +145,12 @@ wss.on('connection', function connection(ws) {
                 }));
         })
         return;
-    }*/
+    }
     
       console.log("Received: " + message);
     
       wss.clients.forEach(function e(client){
-          if(client != ws && message.type == "message")
+          if(client.id == ws.othername && message.type == "message")
               client.send(JSON.stringify({
                   name: ws.personName,
                   data: message.data,
