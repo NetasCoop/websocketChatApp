@@ -74,7 +74,7 @@
                 feedback.innerHTML = "<p> Forwarded ! </p>";
                 
             }
-            if(json.type == "typing") {
+            if(json.type == "typing" && json.name == other) {
                 feedback.innerHTML = "";
                 feedback.innerHTML = "<span>"+ json.other + " typing...";
             }

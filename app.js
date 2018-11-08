@@ -99,7 +99,8 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', function connection(ws, req) {
-    ws.id = req.url.split('=')[1];
+    
+    ws.id = req.url.match(/key=(.*)/)[1];
 
     ws.on('message', function incoming(message) {
       console.log('received: %s', message);
