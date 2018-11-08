@@ -15,7 +15,6 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             {{#if user}} {{!-- {{if user exist}} --}}
-              <span id="sessionUserName" style="color:#fff;">{{user.username}}</span>
               <li role="presentation"><a href="/users/logout">Logout</a></li>
             {{else}}
               <li role="presentation"><a href="/users/login">Login</a></li>
@@ -23,7 +22,11 @@
             {{/if}}
           </ul>
         </nav>
-        <h3 class="text-muted">Coop Chat</h3>
+        <img src="http://www.netas.com.tr/media/1107/coop-netas.png" style="width: 120px; height:80px">
+        <span class="text-muted" style="color: #00A5B5; font-size:40px;padding-left:30px">Coop Chat</span><br>
+        {{#if user}}
+        <span style="color: #F39200;padding-left:160px">Welcome <span id="sessionUserName" style="color:#F39200">{{user.username}}</span> !</span>
+        {{/if}}
       </div>
 
 
