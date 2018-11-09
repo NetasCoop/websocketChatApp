@@ -189,14 +189,14 @@
         }
 }
 
-    function getWebsocket2(a){
+     function getWebsocket2(a){
         chat.innerHTML = "";
         feedback.innerHTML = "";
         other = a;
         selectedUser.innerText = other;
         connect(other);
         console.log(other);
-        socket.send(JSON.stringify({
+        socket.onopen = () =>  socket.send(JSON.stringify({
                 type: "name",
                 name: name,
                 other: a
