@@ -155,7 +155,7 @@
 
 
    function listUsers() {
-        fetch("http://netascoop.herokuapp.com:3000/getUsers") 
+        fetch("http://netascoop.herokuapp.com/getUsers") 
             .then(function(res) {
                 if(res.ok){
                 res.json().then(function(data){
