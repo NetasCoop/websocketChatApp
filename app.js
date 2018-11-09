@@ -95,7 +95,7 @@ app.listen(app.get('port'), function(){
 
 const WebSocket = require('ws');
 var http = require('http');
-const server = http.createServer(app);
+const server = http.server(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', function connection(ws, req) {
