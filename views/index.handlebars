@@ -100,7 +100,7 @@
     function send(){
         var text = document.getElementById('text').value;
         document.getElementById('text').value = ""; 
-        socket.send(JSON.stringify({
+        socket.onopen = () => socket.send(JSON.stringify({
             type: "message",
             data: text,
             other: other,
@@ -116,7 +116,7 @@
         
     }
     function readbackfunction(json){
-        socket.send(JSON.stringify({
+        socket.onopen = () => socket.send(JSON.stringify({
         type: "read",
         name: json.other,
         other: json.name
@@ -126,7 +126,7 @@
         }
     } 
     function typing(){
-        socket.send(JSON.stringify({
+        socket.onopen = () => socket.send(JSON.stringify({
             type: "typing",
             name: name ,
             other: other
@@ -138,7 +138,7 @@
     });
     function viewedfunction(){
         document.addEventListener('visibilitychange', function(){
-                socket.send(JSON.stringify({
+                socket.onopen = () => socket.send(JSON.stringify({
                     type: "viewed",
                     name: name,
                     other: other
@@ -146,7 +146,7 @@
         });
     }
     function userClose(json){
-        socket.send(JSON.stringify({
+        socket.onopen = () => socket.send(JSON.stringify({
         type: "userClose",
         name: json.other,
         other: json.name
