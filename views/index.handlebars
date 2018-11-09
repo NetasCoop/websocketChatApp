@@ -194,13 +194,13 @@
         feedback.innerHTML = "";
         other = a;
         selectedUser.innerText = other;
+        connect(other);
         console.log(other);
         socket.send(JSON.stringify({
                 type: "name",
                 name: name,
                 other: a
             }));
-            
-        connect(other);
+        
     }
 </script>
