@@ -48,7 +48,7 @@
     var chat = document.getElementById('chat');
     var sayac = 0;
     var selectedUser = document.getElementById('selectedUser');
-    var socket = new WebSocket("ws://netascoop.herokuapp.com:3000?key="+name);
+    var socket = new WebSocket("ws://netascoop.herokuapp.com?key="+name);
     listUsers();
     function connect(a){
         socket.onopen = function(){
