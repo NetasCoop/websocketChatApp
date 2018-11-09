@@ -48,7 +48,7 @@
     var chat = document.getElementById('chat');
     var sayac = 0;
     var selectedUser = document.getElementById('selectedUser');
-    var socket = new WebSocket("ws://netascoop.herokuapp.com:5000?key="+name);
+    var socket = new WebSocket("ws://localhost:5000?key="+name);
     listUsers();
     function connect(a){
         socket.onopen = function(){
@@ -100,7 +100,7 @@
     function send(){
         var text = document.getElementById('text').value;
         document.getElementById('text').value = ""; 
-        socket.onopen = () => socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
             type: "message",
             data: text,
             other: other,
@@ -116,7 +116,7 @@
         
     }
     function readbackfunction(json){
-        socket.onopen = () => socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
         type: "read",
         name: json.other,
         other: json.name
@@ -126,7 +126,7 @@
         }
     } 
     function typing(){
-        socket.onopen = () => socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
             type: "typing",
             name: name ,
             other: other
@@ -138,7 +138,7 @@
     });
     function viewedfunction(){
         document.addEventListener('visibilitychange', function(){
-                socket.onopen = () => socket.send(JSON.stringify({
+                socket.send(JSON.stringify({
                     type: "viewed",
                     name: name,
                     other: other
@@ -146,7 +146,7 @@
         });
     }
     function userClose(json){
-        socket.onopen = () => socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
         type: "userClose",
         name: json.other,
         other: json.name
@@ -196,7 +196,7 @@
         selectedUser.innerText = other;
         connect(other);
         console.log(other);
-        socket.onopen = () =>  socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
                 type: "name",
                 name: name,
                 other: a
