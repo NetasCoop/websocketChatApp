@@ -88,14 +88,13 @@ app.use('/users', users);
 
 // Set Port
 /*app.set('port', (process.env.PORT || 3000));
-
 app.listen(app.get('port'), function(){
 	console.log('Server started on port '+app.get('port'));
 });*/
 
 const WebSocket = require('ws');
 var http = require('http');
-const server = http.server(app);
+const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', function connection(ws, req) {

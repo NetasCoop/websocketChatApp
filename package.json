@@ -24,6 +24,7 @@
     "passport": "*",
     "passport-http": "*",
     "passport-local": "*",
+    "websocket": "^1.0.28",
     "ws": "^6.1.0"
   }
 }
